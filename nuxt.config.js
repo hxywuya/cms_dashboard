@@ -1,12 +1,12 @@
 const test = true
-let apiUrl = 'https://api.kehaitong.cn/'
+let apiBaseURL = 'https://api.kehaitong.cn/'
 if (test) {
-  apiUrl = 'http://cmsapi.pdiee.com/dashboard/'
+  apiBaseURL = 'http://cmsapi.pdiee.com/dashboard/'
 }
 
 export default {
   env: {
-    apiUrl,
+    apiBaseURL,
   },
   server: {
     port: 3001, // default: 3000
@@ -27,10 +27,16 @@ export default {
   },
 
   // Global CSS (https://go.nuxtjs.dev/config-css)
-  css: [],
+  css: ['assets/css/common.css', 'element-ui/lib/theme-chalk/index.css'],
 
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
-  plugins: [],
+  plugins: [
+    '@plugins/util',
+    '@plugins/http',
+    '@plugins/auth',
+    '@plugins/element-ui',
+    '@plugins/public-components',
+  ],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
   components: true,
@@ -47,6 +53,7 @@ export default {
     '@nuxtjs/axios',
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
+    'cookie-universal-nuxt',
   ],
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)

@@ -11,9 +11,13 @@
     "lint": "npm run lint:js"
   },
   "dependencies": {
+    "@ckeditor/ckeditor5-build-classic": "24.0.0",
+    "@ckeditor/ckeditor5-vue2": "1.0.5",
     "@nuxtjs/axios": "^5.12.2",
     "@nuxtjs/pwa": "^3.0.2",
+    "cookie-universal-nuxt": "^2.1.4",
     "core-js": "^3.6.5",
+    "dayjs": "1.9.7",
     "element-ui": "2.14.1",
     "nuxt": "^2.14.6"
   },
