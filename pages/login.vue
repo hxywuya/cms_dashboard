@@ -67,6 +67,7 @@ export default {
         success: (res) => {
           this.$store.commit('setToken', res.data.token)
           this.$store.commit('setUserInfo', res.data.info)
+          this.$store.commit('setMenuTree', res.data.menu)
           this.$cookies.set('token', res.data.token)
           this.$router.replace('/')
         },

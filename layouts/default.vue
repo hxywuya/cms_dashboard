@@ -50,13 +50,12 @@ export default {
   data() {
     return {
       defaultActiveMenu: '/',
-      menuTree: [],
       refresh: false,
     }
   },
   computed: {
     // 将store.state中的属性映射到computed
-    ...mapState(['userInfo']),
+    ...mapState(['userInfo', 'menuTree']),
   },
   created() {
     this.defaultActiveMenu = this.$route.fullPath
@@ -89,8 +88,8 @@ export default {
         loading: true,
         success: (res) => {
           this.$store.commit('setUserInfo', res.data.info)
+          this.$store.commit('setMenuTree', res.data.menu)
           // this.$store.commit('setAuthList', res.data.roleInfo.menuUrlsPriv)
-          this.menuTree = res.data.menu
         },
       })
     },

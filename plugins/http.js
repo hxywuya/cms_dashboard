@@ -42,20 +42,24 @@ export default function ({ $axios, store, app }) {
       })
         .then((res) => {
           // 请求成功
-          if (res.data.code === 1) {
-            if (success) {
-              success(res.data)
-            }
-          } else {
-            if (res.data.code === 401) {
+          switch (res.data.code) {
+            case 1:
+              if (success) {
+                success(res.data)
+              }
+              break
+            case 10001:
               app.router.replace('/login')
-            }
-            Message.warning(res.data.msg)
-
-            // 回调
-            if (fail) {
-              fail(res)
-            }
+              if (fail) {
+                fail(res)
+              }
+              break
+            default:
+              Message.warning(res.data.msg)
+              if (fail) {
+                fail(res)
+              }
+              break
           }
         })
         .catch((error) => {
