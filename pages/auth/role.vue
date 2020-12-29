@@ -48,7 +48,7 @@
           align="center"
         />
         <el-table-column
-          prop="remark"
+          prop="remarks"
           label="用户描述"
           min-width="150"
           align="center"
@@ -106,8 +106,8 @@
             <el-form-item prop="name" label="角色名称">
               <el-input v-model="editForm.name" placeholder="角色名称" />
             </el-form-item>
-            <el-form-item prop="remark" label="角色描述">
-              <el-input v-model="editForm.remark" placeholder="角色描述" />
+            <el-form-item prop="remarks" label="角色描述">
+              <el-input v-model="editForm.remarks" placeholder="角色描述" />
             </el-form-item>
           </el-form>
         </div>
@@ -171,14 +171,14 @@ export default {
       onEdit: false,
       editForm: {
         name: '',
-        remark: '',
+        remarks: '',
         menuIds: [],
       },
       step: 0,
       activeName: 'first',
       editFormRules: {
         name: [{ required: true, message: '请输入角色名称', trigger: 'blur' }],
-        remark: [
+        remarks: [
           { required: true, message: '请输入角色描述', trigger: 'blur' },
         ],
       },
@@ -233,7 +233,7 @@ export default {
             this.editForm = {
               id,
               name: res.data.name,
-              remark: res.data.remark,
+              remarks: res.data.remarks,
               menuIds: res.data.menu_ids,
             }
             this.onEdit = true
@@ -243,7 +243,7 @@ export default {
       } else {
         this.editForm = {
           name: '',
-          remark: '',
+          remarks: '',
           menuIds: [],
         }
         this.onEdit = true
@@ -270,7 +270,7 @@ export default {
       const menuIds = this.$refs.menuTree.getCheckedKeys()
       const params = {
         name: this.editForm.name,
-        remark: this.editForm.remark,
+        remarks: this.editForm.remarks,
         menuIds,
       }
 

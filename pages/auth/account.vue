@@ -40,25 +40,6 @@
             </el-button>
           </div>
         </div>
-        <div class="filterform__actions">
-          <div class="filterform__actionslabel">批量操作</div>
-          <el-button
-            style="height: 32px"
-            type="primary"
-            size="small"
-            @click="setStatusOnMany(1)"
-          >
-            批量启用
-          </el-button>
-          <el-button
-            style="height: 32px"
-            type="primary"
-            size="small"
-            @click="setStatusOnMany(0)"
-          >
-            批量禁用
-          </el-button>
-        </div>
       </div>
     </div>
     <!-- 数据展示模块 -->
@@ -67,14 +48,7 @@
         共<span>{{ total }}</span
         >个系统账号
       </div>
-      <el-table
-        class="tableblock__table"
-        stripe
-        :data="tableData"
-        :header-cell-style="{ 'text-align': 'center' }"
-        @selection-change="handleSelectionChange"
-      >
-        <el-table-column type="selection" width="55" />
+      <el-table class="tableblock__table" stripe :data="tableData">
         <el-table-column
           prop="account"
           label="账户名"
@@ -95,16 +69,17 @@
         />
         <el-table-column
           prop="role"
-          label="所属角色"
+          label="角色"
           min-width="120"
           align="center"
-          show-overflow-tooltip
         >
-          <template slot-scope="scope">
-            {{ scope.row.roleInfo ? scope.row.roleInfo.rolename : '' }}
-          </template>
+          <div slot-scope="scope" class="role-list">
+            <el-tag v-for="role of scope.row.roles" :key="role.id" size="mini">
+              {{ role.name }}
+            </el-tag>
+          </div>
         </el-table-column>
-        <el-table-column label="状态" min-width="140">
+        <el-table-column label="状态" min-width="140" align="center">
           <template slot-scope="scope">
             <el-switch
               v-model="scope.row.status"
@@ -118,14 +93,14 @@
           </template>
         </el-table-column>
         <el-table-column
-          prop="remark"
+          prop="remarks"
           label="备注"
           min-width="100"
           show-overflow-tooltip
           align="center"
         >
           <template slot-scope="scope">
-            {{ scope.row.remark ? scope.row.remark : '无' }}
+            {{ scope.row.remarks ? scope.row.remarks : '无' }}
           </template>
         </el-table-column>
         <el-table-column
@@ -186,41 +161,18 @@
             placeholder="请输入登录密码"
           />
         </el-form-item>
-        <el-form-item prop="staffId" label="关联员工：">
-          <div>
-            <el-button type="text" @click="toChoiceStaff">
-              {{ editForm.staff ? '重新选择' : '选择' }}
-            </el-button>
-          </div>
-          <div v-if="editForm.staff" class="staff">
-            <el-avatar
-              class="staff__avatar"
-              :src="
-                editForm.staff.avatar
-                  ? editForm.staff.avatar
-                  : editForm.staff.thumbAvatar
-                  ? editForm.staff.thumbAvatar
-                  : '/img/default_avatar.png'
-              "
-            />
-            <div class="staff__name">
-              {{ editForm.staff.name }}
-            </div>
-            <div class="staff__company ellipsis">
-              {{ editForm.staff.departmentInfo.name }}
-            </div>
-          </div>
+        <el-form-item prop="name" label="姓名：">
+          <el-input v-model="editForm.name" placeholder="请输入账户姓名" />
         </el-form-item>
-        <el-form-item prop="role" label="所属角色：">
-          <el-select
-            v-model="editForm.role"
-            placeholder="请选择"
-            style="width: 200px"
-          >
+        <el-form-item prop="mobile" label="手机号：">
+          <el-input v-model="editForm.mobile" placeholder="请输入账户手机号" />
+        </el-form-item>
+        <el-form-item prop="roles" label="账户角色：">
+          <el-select v-model="editForm.roles" multiple placeholder="请选择">
             <el-option
               v-for="item in roleList"
               :key="item.id"
-              :label="item.rolename"
+              :label="item.name"
               :value="item.id"
             >
             </el-option>
@@ -235,9 +187,9 @@
             inactive-text="禁用"
           />
         </el-form-item>
-        <el-form-item prop="remask" label="备注：">
+        <el-form-item prop="remarks" label="备注：">
           <el-input
-            v-model="editForm.remask"
+            v-model="editForm.remarks"
             type="textarea"
             :rows="3"
             placeholder="请输入内容"
@@ -272,89 +224,6 @@
         </el-button>
       </span>
     </el-dialog>
-
-    <!-- 选择员工 -->
-    <el-dialog
-      title="选择员工"
-      :visible.sync="onChoiceStaff"
-      width="600px"
-      @close="cancelBind"
-    >
-      <div class="heiscoll">
-        <div class="over">
-          <div class="fl" style="width: 40%">
-            <div>选择部门</div>
-            <div class="mt10 eltree" style="margin-right: 10px">
-              <el-tree
-                :data="departmentAllTree"
-                :props="{
-                  label: 'name',
-                  value: 'id',
-                }"
-                node-key="id"
-                :current-node-key="null"
-                default-expand-all
-                :expand-on-click-node="false"
-                highlight-current
-                @node-click="onSelectDepartment"
-              />
-            </div>
-          </div>
-          <div class="fl" style="width: 60%">
-            <div>人员姓名</div>
-            <div>
-              <el-input
-                v-model="staffFilterForm.search"
-                placeholder="请输入员工姓名"
-                @keypress.enter.native="getStaffList()"
-              >
-                <el-button
-                  slot="append"
-                  icon="el-icon-search"
-                  @click="getStaffList()"
-                >
-                </el-button>
-              </el-input>
-            </div>
-            <div style="margin-top: 10px">
-              <el-radio-group
-                v-if="staffList.length > 0"
-                v-model="staffFilterForm.staffId"
-              >
-                <div
-                  v-for="item in staffList"
-                  :key="item.id"
-                  style="height: 20px"
-                >
-                  <el-radio :label="item.id">
-                    {{
-                      item.mobile ? `${item.name} / ${item.mobile}` : item.name
-                    }}
-                  </el-radio>
-                </div>
-              </el-radio-group>
-              <span v-else>未搜到该员工</span>
-            </div>
-            <div>
-              <el-pagination
-                class="tableblock__pagination"
-                layout="prev, pager, next"
-                :total="staffTotal"
-                :page-size.sync="staffPrePage"
-                :current-page="staffCurrentPage"
-                @current-change="getStaffList"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-      <span slot="footer">
-        <el-button size="small" @click="cancelBind">取 消</el-button>
-        <el-button type="primary" size="small" @click="onConfirmSelect">
-          确 定
-        </el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 
@@ -372,18 +241,17 @@ export default {
       total: 0,
       prePage: 20,
       currentPage: 0,
-      selectedIds: [], // 选中列表项的ID集合
 
       // 编辑数据
       onEdit: false,
       editForm: {
         account: '',
         password: '',
-        role: '',
+        name: '',
+        mobile: '',
+        roles: [],
         status: 1,
-        remask: '',
-        staff: null,
-        staffId: null,
+        remarks: '',
       },
       departmentTree: [],
       roleList: [],
@@ -392,26 +260,10 @@ export default {
         password: [
           { required: true, message: '请输入登录密码', trigger: 'blur' },
         ],
-        staffId: [
-          { required: true, message: '请选择关联员工', trigger: 'change' },
-        ],
-        role: [{ required: true, message: '请选择角色', trigger: 'change' }],
+        roles: [{ required: true, message: '请选择角色', trigger: 'blur' }],
         status: [
           { required: true, message: '请选择账户状态', trigger: 'blur' },
         ],
-      },
-
-      // 选择员工
-      onChoiceStaff: false,
-      departmentAllTree: [],
-      staffList: [],
-      staffCurrentPage: 0,
-      staffPrePage: 20,
-      staffTotal: 0,
-      staffFilterForm: {
-        search: '',
-        departmentId: null,
-        staffId: null,
       },
 
       // 重置密码
@@ -436,7 +288,7 @@ export default {
      */
     getRoleList() {
       this.$http.api({
-        url: '/role/getRoles',
+        url: '/common/allRoles',
         success: (res) => {
           this.roleList = res.data
         },
@@ -452,17 +304,6 @@ export default {
       this.getData()
     },
     /**
-     * 监听数据表项选中状态
-     * @param {Array} val 当前选中的列
-     */
-    handleSelectionChange(val) {
-      const selectedIds = []
-      for (const data of val) {
-        selectedIds.push(data.id)
-      }
-      this.selectedIds = selectedIds
-    },
-    /**
      * 获取列表数据
      * @param {Number} page 页码
      */
@@ -471,6 +312,10 @@ export default {
         page,
         num: this.prePage,
         search: this.filterForm.search,
+      }
+
+      if (this.filterForm.search) {
+        params.search = this.filterForm.search
       }
 
       this.onLoading = true
@@ -495,19 +340,19 @@ export default {
     edit(id = null) {
       if (id) {
         this.$http.api({
-          url: '/systemAccount/getSystemAccount',
+          url: '/auth/accountInfo',
           params: { id },
           loading: true,
           success: (res) => {
             this.editForm = {
               id,
-              account: res.data.useraccount,
+              account: res.data.account,
               password: '',
-              role: res.data.role,
-              status: res.data.usingstatus,
-              remask: res.data.remark,
-              staff: res.data.employeeInfo,
-              staffId: res.data.employeeid,
+              name: res.data.name,
+              mobile: res.data.mobile,
+              roles: res.data.roles,
+              status: res.data.status,
+              remarks: res.data.remarks,
             }
 
             if (this.$refs.editForm) {
@@ -521,11 +366,11 @@ export default {
         this.editForm = {
           account: '',
           password: '',
-          role: '',
+          name: '',
+          mobile: '',
+          roles: [],
           status: 1,
-          remask: '',
-          staff: null,
-          staffId: null,
+          remarks: '',
         }
 
         if (this.$refs.editForm) {
@@ -542,23 +387,22 @@ export default {
       this.$refs.editForm.validate((valid, list) => {
         if (valid) {
           const params = {
-            useraccount: this.editForm.account,
-            role: this.editForm.role,
-            usingStatus: this.editForm.status,
-            remark: this.editForm.remark,
-            employeeid: this.editForm.staffId,
+            account: this.editForm.account,
+            name: this.editForm.name,
+            mobile: this.editForm.mobile,
+            roles: this.editForm.roles,
+            status: this.editForm.status,
+            remarks: this.editForm.remarks,
           }
 
-          let url = '/systemAccount/createSystemAccount'
           if (this.editForm.id) {
             params.id = this.editForm.id
-            url = '/systemAccount/updateSystemAccount'
           } else {
             params.password = this.editForm.password
           }
 
           this.$http.api({
-            url,
+            url: '/auth/accountEdit',
             params,
             loading: true,
             method: 'post',
@@ -572,50 +416,12 @@ export default {
       })
     },
     /**
-     * 前往选择员工
-     */
-    toChoiceStaff() {
-      this.staffFilterForm = {
-        search: '',
-        departmentId: null,
-        staffId: null,
-      }
-      this.onChoiceStaff = true
-    },
-    /**
-     * 部门树选中
-     * @param {Number} id 数据ID
-     */
-    onSelectDepartment(data, node, nodes) {
-      this.staffFilterForm.departmentId = data.id
-      this.getStaffList()
-    },
-    /**
-     * 确认选中员工
-     */
-    onConfirmSelect() {
-      if (!this.staffFilterForm.staffId) {
-        this.$message.warning('请先选择一名员工')
-        return
-      }
-      for (const staff of this.staffList) {
-        if (staff.id === this.staffFilterForm.staffId) {
-          this.editForm.staff = staff
-          this.editForm.staffId = staff.id
-          this.$refs.editForm.validateField('staffId')
-          break
-        }
-      }
-
-      this.onChoiceStaff = false
-    },
-    /**
      * 设定指定列表数据的状态
      * @param {Object} data 需要删除的列表项的数据
      */
     setStatus(data) {
       this.$confirm(
-        `此操作将${data.usingstatus === 0 ? '禁用' : '启用'}该账户, 是否继续?`,
+        `此操作将${data.status === 0 ? '禁用' : '启用'}该账户, 是否继续?`,
         '提示',
         {
           confirmButtonText: '确定',
@@ -625,65 +431,25 @@ export default {
       )
         .then(() => {
           const params = {
-            ids: data.id,
-            usingStatus: data.usingstatus,
+            id: data.id,
+            status: data.status,
           }
 
           this.$http.api({
-            url: '/systemAccount/setUsingStatusById',
+            url: '/auth/accountStatus',
             params,
             loading: true,
             method: 'post',
-            type: 'form',
             success: (res) => {
               this.$message.success(
-                `账户${data.usingstatus === 0 ? '停用' : '启用'}成功`
+                `账户${data.status === 0 ? '停用' : '启用'}成功`
               )
             },
           })
         })
         .catch(() => {
-          data.usingstatus = data.usingstatus === 0 ? 1 : 0
+          data.status = data.status === 0 ? 1 : 0
         })
-    },
-    /**
-     * 设定选中的所有列表数据的状态
-     * @param {Number} status 状态 0：禁用 1：启用
-     */
-    setStatusOnMany(status = 0) {
-      if (this.selectedIds.length <= 0) {
-        this.$message.warning('未选中任何账户')
-        return
-      }
-      this.$confirm(
-        `此操作将${status === 0 ? '禁用' : '启用'}所选账户, 是否继续?`,
-        '提示',
-        {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning',
-        }
-      )
-        .then(() => {
-          const params = {
-            ids: this.selectedIds.join(','),
-            usingStatus: status,
-          }
-
-          this.$http.api({
-            url: '/systemAccount/setUsingStatusById',
-            params,
-            loading: true,
-            method: 'post',
-            type: 'form',
-            success: (res) => {
-              this.$message.success(`账户${status === 0 ? '禁用' : '启用'}成功`)
-              this.getData()
-              this.onEdit = false
-            },
-          })
-        })
-        .catch(() => {})
     },
     /**
      * 删除指定列表数据
@@ -697,11 +463,10 @@ export default {
       })
         .then(() => {
           this.$http.api({
-            url: '/systemAccount/deleteSystemAccount',
+            url: '/auth/accountDel',
             params: { id },
             loading: true,
             method: 'post',
-            type: 'form',
             success: (res) => {
               this.$message.success('删除成功')
               this.getData()
@@ -722,11 +487,6 @@ export default {
 
       this.onRePassword = true
     },
-    cancelBind() {
-      this.onChoiceStaff = false
-      this.staffFilterForm.search = ''
-      this.getStaffList()
-    },
     /**
      * 对密码进行重置
      */
@@ -737,11 +497,10 @@ export default {
       }
 
       this.$http.api({
-        url: '/systemAccount/modifyPadword',
+        url: '/auth/resetAccountPwd',
         params,
         loading: true,
         method: 'post',
-        type: 'form',
         success: (res) => {
           this.$message.success('密码重置成功')
           if (this.userInfo.id === params.id) {
@@ -761,34 +520,14 @@ export default {
 }
 
 /* 选择的员工 */
-.staff {
-  display: inline-flex;
+.role-list {
+  display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100px;
-  height: 100px;
-  margin-top: 15px;
-  position: relative;
-  overflow: hidden;
+  justify-content: center;
 }
 
-.staff__avatar {
-  width: 58px;
-  height: 58px;
-  margin-bottom: 4px;
-}
-
-.staff__name {
-  font-size: 14px;
-  font-weight: bold;
-  color: rgba(51, 51, 51, 1);
-  line-height: 20px;
-}
-
-.staff__company {
-  width: 100%;
-  font-size: 12px;
-  color: rgba(153, 153, 153, 1);
-  line-height: 17px;
+.role-list .el-tag + .el-tag {
+  margin-top: 4px;
 }
 </style>
