@@ -277,6 +277,7 @@ export default {
      */
     submit() {
       const menuIds = this.$refs.menuTree.getCheckedKeys()
+      menuIds.push(...this.$refs.menuTree.getHalfCheckedKeys())
       const params = {
         name: this.editForm.name,
         remarks: this.editForm.remarks,
