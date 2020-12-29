@@ -68,6 +68,7 @@ export default {
           this.$store.commit('setToken', res.data.token)
           this.$store.commit('setUserInfo', res.data.info)
           this.$store.commit('setMenuTree', res.data.menu)
+          this.$store.commit('setAuthList', res.data.auth)
           this.$cookies.set('token', res.data.token)
           this.$router.replace('/')
         },

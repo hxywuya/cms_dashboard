@@ -89,7 +89,7 @@ export default {
         success: (res) => {
           this.$store.commit('setUserInfo', res.data.info)
           this.$store.commit('setMenuTree', res.data.menu)
-          // this.$store.commit('setAuthList', res.data.roleInfo.menuUrlsPriv)
+          this.$store.commit('setAuthList', res.data.auth)
         },
       })
     },

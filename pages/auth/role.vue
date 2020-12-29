@@ -22,6 +22,7 @@
         <div class="filterform__top">
           <div class="filterform__topright">
             <el-button
+              v-if="$auth.check('/auth/role/edit')"
               type="primary"
               size="small"
               icon="el-icon-plus"
@@ -62,10 +63,20 @@
         <el-table-column fixed="right" label="操作" width="100" align="center">
           <template slot-scope="scope">
             <template v-if="!scope.row.issystem">
-              <el-button type="text" @click="edit(scope.row.id)">
+              <el-button
+                v-if="$auth.check('/auth/role/edit')"
+                type="text"
+                @click="edit(scope.row.id)"
+              >
                 编辑
               </el-button>
-              <el-button type="text" @click="del(scope.row.id)">删除</el-button>
+              <el-button
+                v-if="$auth.check('/auth/role/del')"
+                type="text"
+                @click="del(scope.row.id)"
+              >
+                删除
+              </el-button>
             </template>
           </template>
         </el-table-column>
@@ -88,40 +99,38 @@
       width="450px"
       @opened="onEditOpened"
     >
-      <div class="heiscoll">
-        <div class="steps">
-          <el-steps :active="step" finish-status="success" simple>
-            <el-step title="角色信息" />
-            <el-step title="角色权限" />
-          </el-steps>
-        </div>
-        <div v-show="step === 0">
-          <el-form
-            ref="editForm"
-            :model="editForm"
-            :rules="editFormRules"
-            size="small"
-            label-width="80px"
-          >
-            <el-form-item prop="name" label="角色名称">
-              <el-input v-model="editForm.name" placeholder="角色名称" />
-            </el-form-item>
-            <el-form-item prop="remarks" label="角色描述">
-              <el-input v-model="editForm.remarks" placeholder="角色描述" />
-            </el-form-item>
-          </el-form>
-        </div>
-        <div v-show="step === 1">
-          <el-tree
-            ref="menuTree"
-            :data="menuTree"
-            :props="{
-              label: 'name',
-            }"
-            node-key="id"
-            show-checkbox
-          />
-        </div>
+      <div class="steps">
+        <el-steps :active="step" finish-status="success" simple>
+          <el-step title="角色信息" />
+          <el-step title="角色权限" />
+        </el-steps>
+      </div>
+      <div v-show="step === 0">
+        <el-form
+          ref="editForm"
+          :model="editForm"
+          :rules="editFormRules"
+          size="small"
+          label-width="80px"
+        >
+          <el-form-item prop="name" label="角色名称">
+            <el-input v-model="editForm.name" placeholder="角色名称" />
+          </el-form-item>
+          <el-form-item prop="remarks" label="角色描述">
+            <el-input v-model="editForm.remarks" placeholder="角色描述" />
+          </el-form-item>
+        </el-form>
+      </div>
+      <div v-show="step === 1">
+        <el-tree
+          ref="menuTree"
+          :data="menuTree"
+          :props="{
+            label: 'name',
+          }"
+          node-key="id"
+          show-checkbox
+        />
       </div>
       <div slot="footer" style="text-align: center">
         <el-button
@@ -321,18 +330,12 @@ export default {
 <style scoped>
 .container {
 }
+
 .steps {
   margin-bottom: 20px;
 }
+
 .steps >>> .el-step__title {
   font-size: 14px;
-}
-.heiscoll {
-  max-height: 350px;
-  overflow: auto;
-}
-
-.data-radio > div {
-  height: 30px;
 }
 </style>

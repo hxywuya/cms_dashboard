@@ -31,6 +31,7 @@
           </el-input>
           <div class="filterform__topright">
             <el-button
+              v-if="$auth.check('/auth/account/edit')"
               type="primary"
               size="small"
               icon="el-icon-plus"
@@ -83,7 +84,9 @@
           <template slot-scope="scope">
             <el-switch
               v-model="scope.row.status"
-              :disabled="scope.row.id === 1"
+              :disabled="
+                scope.row.id === 1 || !$auth.check('/auth/account/setStatus')
+              "
               :active-value="1"
               active-text="启用"
               :inactive-value="0"
@@ -112,20 +115,24 @@
         <el-table-column fixed="right" label="操作" width="180" align="center">
           <template slot-scope="scope">
             <el-button
-              v-if="scope.row.id != 1"
+              v-if="scope.row.id != 1 && $auth.check('/auth/account/edit')"
               type="text"
               @click="edit(scope.row.id)"
             >
               编辑
             </el-button>
             <el-button
-              v-if="scope.row.id != 1"
+              v-if="scope.row.id != 1 && $auth.check('/auth/account/del')"
               type="text"
               @click="del(scope.row.id)"
             >
               删除
             </el-button>
-            <el-button type="text" @click="rePassword(scope.row.id)">
+            <el-button
+              v-if="$auth.check('/auth/account/rePwd')"
+              type="text"
+              @click="rePassword(scope.row.id)"
+            >
               重置密码
             </el-button>
           </template>
