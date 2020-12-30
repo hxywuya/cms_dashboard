@@ -50,10 +50,15 @@
         />
         <el-table-column
           prop="remarks"
-          label="用户描述"
+          label="角色描述"
           min-width="150"
           align="center"
-        />
+          show-overflow-tooltip
+        >
+          <template slot-scope="scope">
+            {{ scope.row.remarks ? scope.row.remarks : '无' }}
+          </template>
+        </el-table-column>
         <el-table-column
           prop="create_time"
           label="创建时间"
