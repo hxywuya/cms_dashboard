@@ -54,6 +54,14 @@ export default function ({ $axios, store, app }) {
                 fail(res)
               }
               break
+            case 10002:
+              Message.closeAll()
+              Message.warning(res.data.msg)
+              app.router.replace('/login')
+              if (fail) {
+                fail(res)
+              }
+              break
             default:
               Message.warning(res.data.msg)
               if (fail) {
