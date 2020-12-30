@@ -17,12 +17,11 @@
     </pagetop>
 
     <!-- 筛选模块 -->
-    <div class="dashboard-card">
+    <div v-if="$auth.check('/auth/role/edit')" class="dashboard-card">
       <div class="filterform">
         <div class="filterform__top">
           <div class="filterform__topright">
             <el-button
-              v-if="$auth.check('/auth/role/edit')"
               type="primary"
               size="small"
               icon="el-icon-plus"
@@ -67,7 +66,7 @@
         />
         <el-table-column fixed="right" label="操作" width="100" align="center">
           <template slot-scope="scope">
-            <template v-if="!scope.row.issystem">
+            <template v-if="!scope.row.id === 1">
               <el-button
                 v-if="$auth.check('/auth/role/edit')"
                 type="text"
