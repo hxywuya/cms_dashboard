@@ -150,7 +150,7 @@
     </div>
 
     <!-- 新增编辑账户 -->
-    <el-dialog title="账户" :visible.sync="onEdit" width="450px">
+    <el-dialog class="dialog" title="账户" :visible.sync="onEdit" width="450px">
       <el-form
         ref="editForm"
         :rules="editFormRules"
@@ -213,7 +213,12 @@
     </el-dialog>
 
     <!-- 重置密码 -->
-    <el-dialog title="重置密码" :visible.sync="onRePassword" width="450px">
+    <el-dialog
+      class="dialog"
+      title="重置密码"
+      :visible.sync="onRePassword"
+      width="450px"
+    >
       <el-form :model="rePasswordForm" size="small" label-width="100px">
         <el-form-item label="设置新密码">
           <el-input

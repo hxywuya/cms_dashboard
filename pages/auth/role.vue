@@ -97,6 +97,7 @@
 
     <!-- 新增/编辑角色 -->
     <el-dialog
+      class="dialog"
       title="角色"
       :visible.sync="onEdit"
       width="450px"
