@@ -1,12 +1,13 @@
 const test = true
-let apiBaseURL = 'https://api.kehaitong.cn/'
+let apiBaseURL = 'https://api.kehaitong.cn'
 if (test) {
-  apiBaseURL = 'http://cmsapi.pdiee.com/dashboard/'
+  apiBaseURL = 'http://cmsapi.pdiee.com/dashboard'
 }
 
 export default {
   env: {
     apiBaseURL,
+    uploadUrl: `${apiBaseURL}/resources/upload`,
   },
   server: {
     port: 3001, // default: 3000
