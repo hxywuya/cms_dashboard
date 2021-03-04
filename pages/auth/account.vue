@@ -1,20 +1,14 @@
 <template>
   <div class="container">
-    <pagetop label="企业微信绑定">
+    <page-top>
       <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item>CRM</el-breadcrumb-item>
         <el-breadcrumb-item to="/">首页</el-breadcrumb-item>
-        <el-breadcrumb-item to="/setting/base/bind">
-          系统设置
-        </el-breadcrumb-item>
-        <el-breadcrumb-item to="/setting/auth/account">
-          权限管理
-        </el-breadcrumb-item>
+        <el-breadcrumb-item to="/auth/account">权限管理</el-breadcrumb-item>
         <el-breadcrumb-item>
-          <span class="isactive">系统账号管理</span>
+          <span class="isactive">系统账号</span>
         </el-breadcrumb-item>
       </el-breadcrumb>
-    </pagetop>
+    </page-top>
 
     <!-- 筛选模块 -->
     <div class="dashboard-card">

@@ -1,13 +1,12 @@
 <template>
   <div class="container">
-    <pagetop label="首页">
+    <page-top>
       <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item>CRM</el-breadcrumb-item>
         <el-breadcrumb-item>
           <span class="isactive">首页</span>
         </el-breadcrumb-item>
       </el-breadcrumb>
-    </pagetop>
+    </page-top>
     <div v-loading="onLoading">
       123123123123123123123123123123123123123123123
     </div>
