@@ -59,7 +59,7 @@
         />
         <el-table-column fixed="right" label="操作" width="100" align="center">
           <template slot-scope="scope">
-            <template v-if="!scope.row.id === 1">
+            <template v-if="scope.row.id !== 1">
               <el-button
                 v-if="$auth.check('/auth/role/edit')"
                 type="text"
