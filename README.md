@@ -20,7 +20,7 @@ $ pm2 start npm --name "name" -- run start
 ```
 
 ## 使用的库
-[Nuxtjs](https://nuxtjs.org) - 基础库
+[Nuxtjs](https://nuxtjs.org) - 基础框架
 
 [cookie-universal](https://github.com/microcipcip/cookie-universal) - nuxt cookie 管理模块
 
