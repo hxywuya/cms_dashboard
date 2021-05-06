@@ -1,6 +1,6 @@
 {
-  "name": "cms_dashboar",
-  "version": "1.0.0",
+  "name": "cms_dashboard",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
     "dev": "nuxt",
