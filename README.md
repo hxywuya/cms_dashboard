@@ -1,20 +1,31 @@
 # 【未命名项目】后台面板
 
-## Build Setup
+## 安装和使用
 
 ```bash
-# install dependencies
+# 安装依赖项
 $ npm install
+# 或
+$ npm i
 
-# serve with hot reload at localhost:3000
+# 开发模式（可热重载） 0.0.0.0:3001
 $ npm run dev
 
-# build for production and launch server
+# 部署到服务器
 $ npm run build
 $ npm run start
 
-# generate static project
-$ npm run generate
+# 部署到服务器（PM2） - 推荐
+$ pm2 start npm --name "name" -- run start
 ```
 
-For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).
+## 使用的库
+[Nuxtjs](https://nuxtjs.org) - 基础库
+
+[cookie-universal](https://github.com/microcipcip/cookie-universal) - nuxt cookie 管理模块
+
+[Day.js](https://day.js.org) - js日期库
+
+[Element](https://element.eleme.cn) - 基础UI库
+
+[wangEditor](https://www.wangeditor.com) - 富文本编辑器
