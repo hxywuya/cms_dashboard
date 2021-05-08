@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <page-top label="企业微信绑定">
+    <page-top>
       <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item>CRM</el-breadcrumb-item>
         <el-breadcrumb-item to="/">首页</el-breadcrumb-item>

@@ -8,7 +8,7 @@
       <i v-if="menu.icon" :class="`el-icon-${menu.icon}`" />
       <span>{{ menu.name }}</span>
     </template>
-    <menuItem
+    <menu-item
       v-for="children in menu.children"
       :key="children.id"
       :menu="children"

@@ -36,7 +36,6 @@ export default {
     '@plugins/http',
     '@plugins/auth',
     '@plugins/element-ui',
-    '@plugins/public-components',
   ],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)

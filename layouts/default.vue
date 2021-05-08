@@ -22,7 +22,7 @@
             active-text-color="#ffd04b"
             @select="menuSelect"
           >
-            <menuItem v-for="menu in menuTree" :key="menu.id" :menu="menu" />
+            <menu-item v-for="menu in menuTree" :key="menu.id" :menu="menu" />
           </el-menu>
         </el-scrollbar>
       </el-aside>
@@ -41,10 +41,6 @@
 
 <script>
 import { mapState } from 'vuex'
-import Vue from 'vue'
-import MenuItem from '~/components/MenuItem'
-
-Vue.use(MenuItem)
 
 export default {
   data() {
