@@ -144,7 +144,12 @@
     </div>
 
     <!-- 新增编辑账户 -->
-    <el-dialog class="dialog" title="账户" :visible.sync="onEdit" width="450px">
+    <my-dialog
+      title="账户"
+      :visible.sync="onEdit"
+      :width="450"
+      @confirm="submit"
+    >
       <el-form
         ref="editForm"
         :rules="editFormRules"
@@ -198,20 +203,14 @@
           </el-input>
         </el-form-item>
       </el-form>
-      <span slot="footer">
-        <el-button size="small" @click="onEdit = false">取 消</el-button>
-        <el-button type="primary" size="small" @click="submit">
-          确 定
-        </el-button>
-      </span>
-    </el-dialog>
+    </my-dialog>
 
     <!-- 重置密码 -->
-    <el-dialog
-      class="dialog"
+    <my-dialog
       title="重置密码"
       :visible.sync="onRePassword"
-      width="450px"
+      :width="450"
+      @confirm="doRePassword"
     >
       <el-form :model="rePasswordForm" size="small" label-width="100px">
         <el-form-item label="设置新密码">
@@ -223,13 +222,7 @@
           <div>请记住新密码并将密码告诉用户。</div>
         </el-form-item>
       </el-form>
-      <span slot="footer">
-        <el-button size="small" @click="onRePassword = false">取 消</el-button>
-        <el-button type="primary" size="small" @click="doRePassword">
-          确 定
-        </el-button>
-      </span>
-    </el-dialog>
+    </my-dialog>
   </div>
 </template>
 

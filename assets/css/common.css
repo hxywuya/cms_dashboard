@@ -216,22 +216,3 @@ body {
   font-weight: bold;
   color: rgba(51, 51, 51, 1);
 }
-
-/* 弹窗 */
-.dialog {
-
-}
-
-.dialog .el-dialog__header {
-  padding: 15px 20px;
-  border-bottom: solid 1px #d9d9d9;
-}
-
-.dialog--header-no-border .el-dialog__header {
-  border-bottom: none;
-}
-
-.dialog .el-dialog__footer {
-  padding: 15px;
-  border-top: solid 1px #d9d9d9;
-}

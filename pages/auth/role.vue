@@ -90,11 +90,10 @@
     </div>
 
     <!-- 新增/编辑角色 -->
-    <el-dialog
-      class="dialog"
+    <my-dialog
       title="角色"
       :visible.sync="onEdit"
-      width="450px"
+      :width="450"
       @opened="onEditOpened"
     >
       <div class="steps">
@@ -130,7 +129,7 @@
           show-checkbox
         />
       </div>
-      <div slot="footer" style="text-align: center">
+      <template slot="footer" style="text-align: center">
         <el-button
           v-if="step === 0"
           size="small"
@@ -156,8 +155,8 @@
           提交
         </el-button>
         <el-button size="small" @click="onEdit = false">取 消</el-button>
-      </div>
-    </el-dialog>
+      </template>
+    </my-dialog>
   </div>
 </template>
 
@@ -243,6 +242,10 @@ export default {
               remarks: res.data.remarks,
               menuIds: res.data.menu_ids,
             }
+
+            if (this.$refs.editForm) {
+              this.$refs.editForm.clearValidate()
+            }
             this.onEdit = true
             this.step = 0
           },
@@ -252,6 +255,10 @@ export default {
           name: '',
           remarks: '',
           menuIds: [],
+        }
+
+        if (this.$refs.editForm) {
+          this.$refs.editForm.clearValidate()
         }
         this.onEdit = true
         this.step = 0

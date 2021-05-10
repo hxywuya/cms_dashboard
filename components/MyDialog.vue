@@ -5,11 +5,15 @@
     :title="title"
     :visible.sync="show"
     :width="`${width}px`"
+    @opened="$emit('opened')"
   >
     <slot></slot>
     <div v-if="showButton" slot="footer" class="dialog-footer">
-      <el-button @click="cancel">取 消</el-button>
-      <el-button type="primary" @click="confirm">确 定</el-button>
+      <!-- footer插槽使用后会导致 confirm 以及 cancel 事件失效 -->
+      <slot name="footer">
+        <el-button @click="cancel">取 消</el-button>
+        <el-button type="primary" @click="confirm">确 定</el-button>
+      </slot>
     </div>
   </el-dialog>
 </template>
@@ -18,24 +22,27 @@
 export default {
   name: 'MyDialog',
   props: {
+    // 是否显示，默认 false
     visible: {
       type: Boolean,
       default: false,
     },
+    // 弹出框宽度，默认180PX
     width: {
       type: Number,
       default: 180,
     },
+    // 弹出框标题，默认为空
     title: {
       type: String,
       default: '',
     },
-    // 是否显示底部操作按钮
+    // 是否显示底部操作按钮，默认显示
     showButton: {
       type: Boolean,
       default: true,
     },
-    // BODY无内边距
+    // BODY无内边距，默认为 false
     bodyNoPadding: {
       type: Boolean,
       default: false,
@@ -96,16 +103,16 @@ export default {
   padding: 0;
 }
 
-.dialog .el-dialog__header {
+.dialog >>> .el-dialog__header {
   padding: 15px 20px;
   border-bottom: solid 1px #d9d9d9;
 }
 
-.dialog--header-no-border .el-dialog__header {
+.dialog--header-no-border >>> .el-dialog__header {
   border-bottom: none;
 }
 
-.dialog .el-dialog__footer {
+.dialog >>> .el-dialog__footer {
   padding: 15px;
   border-top: solid 1px #d9d9d9;
 }
