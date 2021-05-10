@@ -2,7 +2,6 @@
   <div class="page-top" :class="{ 'page-top--nomargin': noMargin }">
     <div class="page-top__left">
       <slot></slot>
-      <!-- <div class="page-top__label">{{ label }}</div> -->
     </div>
     <div v-if="back" class="page-top__back" @click="$router.go(-1)">
       <el-button icon="el-icon-arrow-left" size="mini" /> <span>返回</span>
@@ -14,15 +13,12 @@
 export default {
   name: 'PageTop',
   props: {
-    // 数据
-    label: {
-      type: String,
-      default: '',
-    },
+    // 无外边距，默认 false
     noMargin: {
       type: Boolean,
       default: false,
     },
+    // 是否显示返回按钮，默认不显示
     back: {
       type: Boolean,
       default: false,
@@ -38,6 +34,7 @@ export default {
   padding: 15px 30px;
   margin-bottom: 18px;
   display: flex;
+  height: 60px;
 }
 
 .page-top--nomargin {
