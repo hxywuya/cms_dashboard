@@ -8,6 +8,7 @@ export default {
   env: {
     apiBaseURL,
     uploadUrl: `${apiBaseURL}/resources/upload`,
+    fileStore: '',
   },
   server: {
     port: 3001, // default: 3000

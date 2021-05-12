@@ -32,9 +32,9 @@
     </div>
     <div class="bottom">
       <div>
-        ©2020 kehaitong.cn. All rights reserved 青岛启力互联信息技术有限公司
+        ©2021 PDieE.com. All rights reserved XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       </div>
-      <div>电信与信息服务业务经营许可证：鲁ICP备15021006号-4</div>
+      <div>电信与信息服务业务经营许可证：XXXXXXXXXX</div>
     </div>
   </div>
 </template>
@@ -100,7 +100,7 @@ export default {
 .login-box {
   flex: 1;
   background-image: url('/img/login/bg.png');
-  background-size: auto 100%;
+  background-size: cover;
   background-repeat: no-repeat;
   background-color: rgb(31, 146, 248);
   display: flex;
