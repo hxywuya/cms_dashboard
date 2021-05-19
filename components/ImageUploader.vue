@@ -119,6 +119,8 @@ export default {
      */
     url(val) {
       this.imageUrl = val
+      // v-model的值由父组件更新时清空本地预览图
+      this.previewImageUrl = ''
     },
   },
   created() {
