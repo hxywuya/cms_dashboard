@@ -12,20 +12,12 @@
 
     <!-- 筛选模块 -->
     <div v-if="$auth.check('/auth/role/edit')" class="dashboard-card">
-      <div class="filterform">
-        <div class="filterform__top">
-          <div class="filterform__topright">
-            <el-button
-              type="primary"
-              size="small"
-              icon="el-icon-plus"
-              @click="edit()"
-            >
-              新增角色
-            </el-button>
-          </div>
-        </div>
-      </div>
+      <my-filter
+        v-model="filterForm"
+        :search="false"
+        action-button="新增角色"
+        @actionClick="edit"
+      />
     </div>
     <!-- 数据展示模块 -->
     <div v-loading="onLoading" class="dashboard-card">

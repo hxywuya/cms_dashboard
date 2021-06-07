@@ -18,7 +18,8 @@
     "dayjs": "~1.10.4",
     "element-ui": "~2.15.1",
     "nuxt": "^2.14.12",
-    "wangeditor": "^4.6.7"
+    "wangeditor": "^4.6.7",
+    "xss": "^1.0.9"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config": "^5.0.0",

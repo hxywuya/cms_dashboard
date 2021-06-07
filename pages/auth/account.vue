@@ -12,30 +12,14 @@
 
     <!-- 筛选模块 -->
     <div class="dashboard-card">
-      <div class="filterform">
-        <div class="filterform__top">
-          <el-input
-            v-model="filterForm.search"
-            class="filterform__search"
-            size="small"
-            placeholder="输入角色/账号/姓名/手机号搜索"
-            @keypress.enter.native="getData()"
-          >
-            <el-button slot="append" icon="el-icon-search" @click="getData()" />
-          </el-input>
-          <div class="filterform__topright">
-            <el-button
-              v-if="$auth.check('/auth/account/edit')"
-              type="primary"
-              size="small"
-              icon="el-icon-plus"
-              @click="edit()"
-            >
-              新增用户
-            </el-button>
-          </div>
-        </div>
-      </div>
+      <my-filter
+        v-model="filterForm"
+        :default-form="{ search: '' }"
+        action-button="新增用户"
+        search-placeholder="输入角色/账号/姓名/手机号搜索"
+        @actionClick="edit"
+        @search="getData"
+      />
     </div>
     <!-- 数据展示模块 -->
     <div v-loading="onLoading" class="dashboard-card">

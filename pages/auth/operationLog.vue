@@ -12,59 +12,39 @@
 
     <!-- 筛选模块 -->
     <div class="dashboard-card">
-      <div class="filterform">
-        <div class="filterform__top">
-          <el-input
-            v-model="filterForm.search"
-            class="filterform__search"
-            size="small"
-            placeholder="输入操作事件搜索"
-            @keypress.enter.native="getData()"
+      <my-filter
+        v-model="filterForm"
+        :default-form="{ search: '', dateRange: null, moduleId: null }"
+        search-placeholder="输入操作事件搜索"
+        @search="getData"
+      >
+        <el-form-item>
+          <el-date-picker
+            v-model="filterForm.dateRange"
+            type="daterange"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            value-format="yyyy-MM-dd"
+            @change="getData()"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-select
+            v-model="filterForm.moduleId"
+            filterable
+            clearable
+            placeholder="全部模块"
+            @change="getData()"
           >
-            <el-button slot="append" icon="el-icon-search" @click="getData()" />
-          </el-input>
-        </div>
-        <div class="filterform__group">
-          <el-form
-            inline
-            :model="filterForm"
-            size="small"
-            @submit.native.prevent
-          >
-            <el-form-item>
-              <el-date-picker
-                v-model="filterForm.dateRange"
-                type="daterange"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                value-format="yyyy-MM-dd"
-                @change="getData()"
-              />
-            </el-form-item>
-            <el-form-item>
-              <el-select
-                v-model="filterForm.moduleId"
-                filterable
-                clearable
-                placeholder="全部模块"
-                @change="getData()"
-              >
-                <el-option
-                  v-for="module in operationModules"
-                  :key="module.id"
-                  :label="module.name"
-                  :value="module.id"
-                />
-              </el-select>
-            </el-form-item>
-            <el-form-item>
-              <div class="filterform__resetbtn" @click="clearFilterForm">
-                <i class="el-icon-refresh-right" /> 重置
-              </div>
-            </el-form-item>
-          </el-form>
-        </div>
-      </div>
+            <el-option
+              v-for="module in operationModules"
+              :key="module.id"
+              :label="module.name"
+              :value="module.id"
+            />
+          </el-select>
+        </el-form-item>
+      </my-filter>
     </div>
 
     <!-- 数据展示模块 -->
