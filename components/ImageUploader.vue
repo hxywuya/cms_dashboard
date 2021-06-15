@@ -1,11 +1,80 @@
 <template>
+  <!-- 多图上传 -->
+  <div v-if="multiple" class="image-uploader-list">
+    <div
+      v-for="(image, i) in imageList"
+      :key="image.uid"
+      class="image-uploader-list__item"
+    >
+      <el-button
+        class="image-uploader__del"
+        type="text"
+        icon="el-icon-delete"
+        @click="imageList.splice(i, 1)"
+      />
+      <el-image
+        class="image-uploader__image"
+        :src="image.url || image.previeUrl"
+        :style="{
+          width: `${innerWidth}px`,
+          height: `${innerHeight}px`,
+        }"
+        fit="cover"
+        @load="imageLoaded(image)"
+      />
+      <transition name="el-fade-in">
+        <div v-show="image.onUpload" class="image-uploader__progress">
+          <el-progress
+            type="circle"
+            :width="progressSize"
+            :percentage="image.progress"
+            :status="image.status"
+          />
+        </div>
+      </transition>
+    </div>
+    <el-upload
+      v-if="limit > imageList.length"
+      class="image-uploader"
+      :style="{ width: innerWidth + 'px', height: innerHeight + 'px' }"
+      action=""
+      :disabled="onUpload"
+      :show-file-list="false"
+      :before-upload="multipleBeforeImageUpload"
+      :http-request="uploadSectionFile"
+      :accept="accept"
+      multiple
+      :limit="limit"
+      :file-list="imageList"
+      :on-exceed="() => $message.warning(exceedMsg || `图片不得超过${limit}个`)"
+    >
+      <el-image
+        class="image-uploader__image"
+        :src="null"
+        :style="{
+          width: `${innerWidth}px`,
+          height: `${innerHeight}px`,
+        }"
+      >
+        <template slot="error">
+          <slot>
+            <div class="image-uploader__placeholder">
+              <i class="el-icon-plus" />
+            </div>
+          </slot>
+        </template>
+      </el-image>
+    </el-upload>
+  </div>
+  <!-- 单图上传 -->
   <el-upload
+    v-else
     class="image-uploader"
     :style="{ width: innerWidth + 'px', height: innerHeight + 'px' }"
     action=""
     :disabled="onUpload"
     :show-file-list="false"
-    :before-upload="beforeAvatarUpload"
+    :before-upload="beforeImageUpload"
     :http-request="uploadSectionFile"
     :accept="accept"
   >
@@ -17,7 +86,7 @@
         height: `${innerHeight}px`,
       }"
       fit="cover"
-      @load="imageLoaded"
+      @load="imageLoaded()"
     >
       <template slot="error">
         <slot>
@@ -54,6 +123,8 @@ export default {
         if (typeof value === 'string' || Array.isArray(value)) {
           return true
         }
+
+        return false
       },
     },
     width: {
@@ -82,6 +153,23 @@ export default {
       type: Number,
       default: 1024 * 1024 * 2,
     },
+    // 是否允许多图，默认单图
+    multiple: {
+      type: Boolean,
+      default: false,
+    },
+    // 图片数量，允许多图时有效，不得小于2
+    limit: {
+      type: Number,
+      default: 9,
+      validator(value) {
+        if (value > 2) {
+          return true
+        }
+
+        return false
+      },
+    },
   },
   data() {
     return {
@@ -95,6 +183,9 @@ export default {
       progressSize: 144,
       progress: 0,
       uploadStatus: null,
+
+      // 多图上传
+      imageList: [],
     }
   },
   computed: {
@@ -118,9 +209,27 @@ export default {
      * @param {String} val onChoice的新值
      */
     url(val) {
-      this.imageUrl = val
-      // v-model的值由父组件更新时清空本地预览图
-      this.previewImageUrl = ''
+      if (this.multiple) {
+        if (val && val.length > 0) {
+          const imageList = []
+          for (const image of val) {
+            imageList.push({
+              uid: image.uid,
+              name: image.name,
+              progress: 100,
+              status: null,
+              onUpload: false,
+              previeUrl: null,
+              url: image.url,
+            })
+          }
+          this.imageList = imageList
+        }
+      } else {
+        this.imageUrl = val
+        // v-model的值由父组件更新时清空本地预览图
+        this.previewImageUrl = ''
+      }
     },
   },
   created() {
@@ -143,7 +252,7 @@ export default {
      * 预览图片(单张)
      * @param {File} file 文件
      */
-    beforeAvatarUpload(file) {
+    beforeImageUpload(file) {
       // 上传前判断图片大小是否超过限制
       if (file.size > this.maximumSize) {
         this.$message.warning(
@@ -159,25 +268,68 @@ export default {
       this.uploadStatus = null
     },
     /**
-     * 上传图片（单张）
+     * 预览图片(多张)
+     * @param {File} file 文件
+     */
+    multipleBeforeImageUpload(file) {
+      // 上传前判断文件大小是否超过限制
+      if (file.size > this.maximumSize) {
+        this.$message.warning(
+          `图片不能超过 ${this.byteConvert(this.maximumSize)}!`
+        )
+        return false
+      }
+
+      this.imageList.push({
+        uid: file.uid,
+        name: file.name,
+        progress: 0,
+        status: null,
+        onUpload: true,
+        previeUrl: URL.createObjectURL(file),
+        url: null,
+      })
+    },
+    /**
+     * 上传图片
      * @param { Object} params 包含文件的数据
      */
     uploadSectionFile(params) {
       const file = params.file
+      let image = null
+      if (this.multiple) {
+        for (const img of this.imageList) {
+          if (img.uid === file.uid) {
+            image = img
+          }
+        }
+      }
 
       this.$qiniu.qiniuUpload({
         file,
         path: this.path,
         next: (res) => {
-          this.progress = res.total.percent * 0.9
+          if (image) {
+            image.progress = parseFloat((res.total.percent * 0.9).toFixed(2))
+          } else {
+            this.progress = parseFloat((res.total.percent * 0.9).toFixed(2))
+          }
         },
         error: (err) => {
           this.$emit('error', err)
-          this.uploadStatus = 'warning'
+          if (image) {
+            image.status = 'warning'
+          } else {
+            this.uploadStatus = 'warning'
+          }
         },
         complete: (res) => {
-          this.imageUrl = res.url
-          this.$emit('success', this.imageUrl)
+          if (image) {
+            image.url = res.url
+          } else {
+            this.imageUrl = res.url
+            this.$emit('success', this.imageUrl)
+          }
         },
       })
 
@@ -199,10 +351,17 @@ export default {
       // })
     },
     /**
-     * 图片加载完成(单张)
+     * 图片加载完成
      */
-    imageLoaded() {
-      if (this.imageUrl) {
+    imageLoaded(image = null) {
+      if (image) {
+        image.progress = 100
+        image.status = 'success'
+        setTimeout(() => {
+          image.onUpload = false
+          this.$emit('change', this.imageList)
+        }, 1000)
+      } else if (this.imageUrl) {
         this.progress = 100
         this.uploadStatus = 'success'
         setTimeout(() => {
@@ -269,5 +428,35 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* 多图上传 */
+.image-uploader-list {
+  margin-right: -10px;
+}
+
+.image-uploader-list__item {
+  display: inline-block;
+  margin-right: 10px;
+  position: relative;
+}
+
+.image-uploader__del {
+  position: absolute;
+  top: 0;
+  right: 0;
+  color: aliceblue;
+  font-size: 16px;
+  padding: 6px;
+  z-index: 10;
+  transition: 0.2s;
+}
+
+.image-uploader__del:hover {
+  color: beige;
+}
+
+.image-uploader-list .image-uploader {
+  margin-right: 10px;
 }
 </style>
